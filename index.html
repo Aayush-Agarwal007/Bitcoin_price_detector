@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bitcoin Price Detector</title>
+  <link rel="stylesheet" href="\style.css">
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Bitcoin Price Detector</h1>
+    <div id="price-box">
+      <div id="price">Loading...</div>
+      <div id="change"></div>
+      <div id="signal"></div>
+      <small id="updated"></small>
+    </div>
+    <div id="history"></div>
+  </div>
+  <script >// static/script.js
+const socket = io();
+
+const priceEl = document.getElementById("price");
+const changeEl = document.getElementById("change");
+const signalEl = document.getElementById("signal");
+const updatedEl = document.getElementById("updated");
+const historyEl = document.getElementById("history");
+
+let lastPrice = null;
+
+socket.on('connect', () => {
+  console.log("Connected to server");
+});
+
+socket.on('price_update', (data) => {
+  const price = data.price;
+  const ts = new Date(data.timestamp * 1000); // server emits time.time()
+  priceEl.innerText = `$${price.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+
+  if (lastPrice !== null) {
+    const pct = (price - lastPrice) / lastPrice * 100;
+    changeEl.innerText = `Change: ${pct.toFixed(3)}%`;
+    changeEl.style.color = pct >= 0 ? "#7ee787" : "#ff7b7b";
+  } else {
+    changeEl.innerText = "Change: -";
+  }
+
+  if (data.signal) {
+    signalEl.innerText = `Signal: ${data.signal}`;
+    signalEl.style.color = data.signal.startsWith("BUY") ? "#7ee787" : "#ff7b7b";
+  } else {
+    signalEl.innerText = "";
+  }
+
+  updatedEl.innerText = `Updated: ${ts.toLocaleTimeString()}`;
+  lastPrice = price;
+
+  // append to history
+  const item = document.createElement("div");
+  item.innerText = `${ts.toLocaleTimeString()} — $${price.toFixed(2)} ${data.signal ? " — " + data.signal : ""}`;
+  historyEl.prepend(item);
+});
+</script>
+</body>
+</html>
