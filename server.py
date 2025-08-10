@@ -5,7 +5,7 @@ import requests
 import json
 from collections import deque
 
-from flask import Flask, render_template
+from flask import Flask, send_from_directory,session,redirect
 from flask_socketio import SocketIO, emit
 
 from sklearn.ensemble import IsolationForest
@@ -133,9 +133,27 @@ def background_price_poller():
         time.sleep(POLL_INTERVAL)
 
 # ---- Flask routes ----
+
+
 @app.route("/")
-def index():
-    return render_template("index.html")
+def login_page():
+    return send_from_directory("static", "login.html")
+
+@app.route("/signup")
+def signup_page():
+    return send_from_directory("static", "signup.html")
+
+@app.route("/index")
+def bitcoin_page():
+    if "uid" not in session:
+        return redirect("/")
+    return send_from_directory("static", "index.html")
+
+@app.route("/set_session/<uid>")
+def set_session(uid):
+    session["uid"] = uid
+    return "OK"
+
 
 # ---- SocketIO events ----
 @socketio.on('connect')
