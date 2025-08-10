@@ -141,7 +141,7 @@ def index():
 @socketio.on('connect')
 def handle_connect():
     print("Client connected")
-    emit('connected', {"message": "Connected to server"})
+    emit('connected', {"message": "Hii Aayush Agarwal We are Connected to server"})
 
 @socketio.on('disconnect')
 def handle_disconnect():
