@@ -6,25 +6,81 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script>
-   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDMS7Cj7CB1-DWvADa_j-8OI3UkfHjP3Gg",
-  authDomain: "bitcoin-price-detector.firebaseapp.com",
-  projectId: "bitcoin-price-detector",
-  storageBucket: "bitcoin-price-detector.firebasestorage.app",
-  messagingSenderId: "1081149420675",
-  appId: "1:1081149420675:web:842b2ada39795febf497b6",
-  measurementId: "G-6STRD2XPKM"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDMS7Cj7CB1-DWvADa_j-8OI3UkfHjP3Gg",
+      authDomain: "bitcoin-price-detector.firebaseapp.com",
+      projectId: "bitcoin-price-detector",
+      storageBucket: "bitcoin-price-detector.firebasestorage.app",
+      messagingSenderId: "1081149420675",
+      appId: "1:1081149420675:web:842b2ada39795febf497b6",
+      measurementId: "G-6STRD2XPKM"
+    };
     firebase.initializeApp(firebaseConfig);
   </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #fff;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      width: 300px;
+      text-align: center;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #357ae8;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .signup-btn {
+      background-color: #34a853;
+      color: white;
+      border: none;
+      margin-top: 10px;
+    }
+    .signup-btn:hover {
+      background-color: #2d9249;
+    }
+  </style>
 </head>
 <body>
-  <h1>Login</h1>
-  <input type="email" id="email" placeholder="Email"><br>
-  <input type="password" id="password" placeholder="Password"><br>
-  <button id="login-btn">Login</button>
-  <button onclick="window.location.href='/signup'">Sign Up</button>
+  <div class="container">
+    <h1>Login</h1>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button id="login-btn">Login</button>
+    <p style="margin: 5px 0; color: #777;">or</p>
+    <button class="signup-btn" onclick="window.location.href='signup.html'">Sign Up</button>
+  </div>
 
   <script>
     document.getElementById("login-btn").addEventListener("click", function() {
@@ -35,9 +91,9 @@ const firebaseConfig = {
         .then((userCredential) => {
           const user = userCredential.user;
           fetch(`http://localhost:5000/set_session/${user.uid}`)
-.then(() => {
-            window.location.href = "/bitcoin";
-          });
+            .then(() => {
+              window.location.href = "bitcoin.html";
+            });
         })
         .catch((error) => {
           alert("Login failed: " + error.message);
